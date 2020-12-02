@@ -23,12 +23,14 @@ impl From<&Tile> for char {
 
 }
 
+#[allow(dead_code)]
 #[derive(Debug, PartialEq, Eq, Hash, Clone)]
 enum Direction {
     Up, Right, Down, Left
 }
 
 impl Direction {
+    #[allow(dead_code)]
     fn diff(&self) -> Pos {
         match self {
             Direction::Up => Pos { x: 0, y: -1},
@@ -129,6 +131,7 @@ impl Map {
         }
     }
 
+    #[allow(dead_code)]
     fn move_with_direction(&mut self, dir: &Direction) -> Result<(), &'static str> {
         self.is_move_possible(&dir)?;
 
@@ -141,6 +144,7 @@ impl Map {
         Ok(())
     }
 
+    #[allow(dead_code)]
     fn is_move_possible(&self, dir: &Direction) -> Result<(), &'static str> {
         match self.tiles.get(&(&self.pos + &dir.diff())) {
             None | Some(Tile::Wall) => Err("Possition does not exist"),
