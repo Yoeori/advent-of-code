@@ -7,10 +7,10 @@ pub fn main() {
     let file = fs::read_to_string("puzzles/3.txt").unwrap();
     let map: Vec<Vec<char>> = file.split("\n").map(|l| l.chars().collect()).collect();
 
-    println!("Answer to exercise 1: {}", check_slope(&map, 1, 3));
-    
-    let mut total = check_slope(&map, 1, 1);
-    total *= check_slope(&map, 1, 3);
+    let mut total = check_slope(&map, 1, 3);
+    println!("Answer to exercise 1: {}", total);
+
+    total *= check_slope(&map, 1, 1);
     total *= check_slope(&map, 1, 5);
     total *= check_slope(&map, 1, 7);
     total *= check_slope(&map, 2, 1);
