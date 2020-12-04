@@ -1,12 +1,14 @@
 mod day01;
 mod day02;
 mod day03;
+mod day04;
+mod day04golf;
 
 use std::env;
 use ansi_term::Style;
 
 fn main() {
-    let days: &[fn()-> ()] = &[day01::main, day02::main, day03::main];
+    let days: &[fn()-> ()] = &[day01::main, day02::main, day03::main, day04::main];
                                     
     let args: Vec<String> = env::args().collect();
 
