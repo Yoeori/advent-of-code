@@ -60,6 +60,7 @@ impl Pos {
     }
 }
 
+#[allow(dead_code)]
 pub fn main() {
     let file = fs::read_to_string("puzzles/11.txt").unwrap();
 

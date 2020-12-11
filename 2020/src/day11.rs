@@ -5,26 +5,22 @@ const DELTA: &[(isize, isize)] = &[(0, -1), (-1, -1), (-1, 0), (-1, 1), (0, 1), 
 pub fn main() {
     let file = fs::read_to_string("puzzles/11.txt").unwrap();
     
-    let mut seats: Vec<Vec<char>> = file.split("\n").map(|l| l.chars().collect()).collect();
-    let orig = seats.clone();
-    let mut next_seats;
+    let orig_seats: Vec<Vec<char>> = file.split("\n").map(|l| l.chars().collect()).collect();
+
+    let mut seats = orig_seats.clone();
+    let mut next_seats = vec![vec![' '; seats[0].len()]; seats.len()];
 
     let mut changed = true;
     while changed == true {
         changed = false;
-        next_seats = seats.clone();
 
         for y in 0..seats.len() {
             for x in 0..seats[y].len() {
+                next_seats[y][x] = determine(&seats, x as isize, y as isize);
 
-                let new = determine(&seats, x as isize, y as isize);
-
-                if seats[y][x] != new {
+                if seats[y][x] != next_seats[y][x] {
                     changed = true;
                 }
-
-                next_seats[y][x] = new;
-
             }
         }
 
@@ -33,23 +29,20 @@ pub fn main() {
 
     println!("Answer to exercise 1: {}", seats.iter().map(|l| l.iter().filter(|&x| x == &'#').count()).sum::<usize>());
 
+    let mut seats = orig_seats.clone();
+    // next_seats is reused (overwritten)
 
     let mut changed = true;
-    let mut seats = orig;
     while changed == true {
         changed = false;
-        next_seats = seats.clone();
 
         for y in 0..seats.len() {
             for x in 0..seats[y].len() {
-                let new = determine_impr(&seats, x as isize, y as isize);
+                next_seats[y][x] = determine_impr(&seats, x as isize, y as isize);
 
-                if seats[y][x] != new {
+                if seats[y][x] != next_seats[y][x] {
                     changed = true;
                 }
-
-                next_seats[y][x] = new;
-
             }
         }
 
