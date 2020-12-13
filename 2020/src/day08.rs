@@ -26,15 +26,15 @@ pub fn main() {
         let tmp = instructions[i];
 
         if let ("nop", x) = tmp {
-            std::mem::replace(&mut instructions[i], ("jmp", x));
+            let _ = std::mem::replace(&mut instructions[i], ("jmp", x));
         } else if let ("jmp", x) = tmp {
-            std::mem::replace(&mut instructions[i], ("nop", x));
+            let _ = std::mem::replace(&mut instructions[i], ("nop", x));
         } else {
             continue;
         }
 
         let res = execute(&instructions);
-        std::mem::replace(&mut instructions[i], tmp);
+        let _ = std::mem::replace(&mut instructions[i], tmp);
         
         if let Ok(res) = res {
             println!("Answer to exercise 2: {:?}", res);
