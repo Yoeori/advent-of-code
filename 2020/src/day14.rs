@@ -7,8 +7,8 @@ pub fn main() {
 
     let re = Regex::new(r"^mem\[(?P<index>\d+)\] = (?P<val>\d+)$").unwrap();
 
-    let mut mem: HashMap<usize, u64> = HashMap::new();
-    let mut memv2: HashMap<usize, u64> = HashMap::new();
+    let mut mem: HashMap<usize, u64> = HashMap::with_capacity(file.lines().count());
+    let mut memv2: HashMap<usize, u64> = HashMap::with_capacity(file.lines().count() * 2usize.pow(8));
     let mut mask = vec![];
 
     for line in file.lines() {
@@ -23,9 +23,7 @@ pub fn main() {
             mem.insert(index,  mask_apply(&mask, val));
 
             // part 2
-            for mask in mask_applyv2(&mask, index) {
-                memv2.insert(mask, val);
-            }
+            memv2.extend(mask_applyv2(&mask, index).iter().map(|&mask| (mask, val)))
         }
     }
 
