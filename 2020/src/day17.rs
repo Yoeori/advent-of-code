@@ -1,4 +1,4 @@
-use std::hash::Hash;
+use std::{hash::Hash, time::SystemTime};
 use std::collections::{HashMap, HashSet};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -10,11 +10,11 @@ struct Cord4 {
 }
 
 trait Neighbours<T> {
-    fn neigbours(&self) -> Vec<T>;
+    fn neighbours(&self) -> Vec<T>;
 }
 
 impl Neighbours<Cord4> for Cord4 {
-    fn neigbours(&self) -> Vec<Cord4> {
+    fn neighbours(&self) -> Vec<Cord4> {
         let mut res = vec![];
 
         for x in -1..=1 {
@@ -43,7 +43,7 @@ struct Cord3 {
 }
 
 impl Neighbours<Cord3> for Cord3 {
-    fn neigbours(&self) -> Vec<Cord3> {
+    fn neighbours(&self) -> Vec<Cord3> {
         let mut res = vec![];
 
         for x in -1..=1 {
@@ -67,6 +67,7 @@ pub fn main() {
         |l | l.chars().enumerate().filter(|(_, c)| *c == '#').map(|(x, _)| x).collect()
     ).enumerate().collect();
 
+    let time = SystemTime::now();
     let map: HashSet<Cord3> = simple_map.iter().map(|(y, xs)| xs.iter().map(|x| Cord3 {
         z: 0,
         y: *y as isize,
@@ -83,31 +84,33 @@ pub fn main() {
     }).collect::<HashSet<Cord4>>()).flatten().collect();
 
     println!("Solution to exercise 2: {}", simulate(map));
+    println!("Took: {:?}", time.elapsed().unwrap());
 }
 
 fn simulate<M: Eq + Neighbours<M> + Clone + Hash>(mut map: HashSet<M>) -> usize {
     for _ in 0..6 {
-        let cur_map = map.clone();
-        let check_set: HashSet<M> = cur_map.iter().map(|n| {
-            let mut v = n.neigbours();
-            v.push(n.clone());
-            v
-        }).flatten().collect();
+        let mut count: HashMap<M, usize> = map.iter().map(|coord| (coord.clone(), 0)).collect();
 
-        for k in check_set {
-            let c = k.neigbours().iter().filter(|&c| cur_map.contains(c)).count();
+        // Count neighbours for every position
+        for c in &map {
+            for neighbour in c.neighbours() {
+                count.entry(neighbour).and_modify(|count| { *count += 1 }).or_insert(1);
+            }
+        }
 
-            if cur_map.contains(&k) { // Cube is active or not
-                if !(c == 2 || c == 3) {
-                    map.remove(&k);
+        // Update map
+        for (coordinate, c) in count {
+            if map.contains(&coordinate) {
+                if !(c == 3 || c == 2) {
+                    map.remove(&coordinate);
                 }
             } else {
                 if c == 3 {
-                    map.insert(k);
+                    map.insert(coordinate);
                 }
             }
         }
     }
 
-    return map.len()
+    map.len()
 }
