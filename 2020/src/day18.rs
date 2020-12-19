@@ -1,14 +1,10 @@
-use std::time::SystemTime;
-
 pub fn main() {
     let file = include_str!("../puzzles/18.txt")
         .split('\n')
         .map(|l| l.split(' ').map(|c| c.chars()).flatten().map(|c| c.to_string()));
 
-    let time = SystemTime::now();
     println!("Solution to exercise 1: {}", file.clone().map(|mut l| eval(&mut l)).sum::<usize>());
     println!("Solution to exercise 2: {}", file.clone().map(|mut l| eval_addition(&mut l)).sum::<usize>());
-    println!("{:?}", time.elapsed());
 }
 
 fn eval(seq: &mut dyn Iterator<Item=String>) -> usize {
