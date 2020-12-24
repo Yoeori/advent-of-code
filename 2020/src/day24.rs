@@ -6,11 +6,11 @@ enum Dir {
 }
 
 impl Dir {
-    fn iter() -> &'static [Dir] {
+    const fn iter() -> &'static [Dir] {
         &[Dir::E, Dir::SE, Dir::SW, Dir::W, Dir::NW, Dir::NE]
     }
 
-    fn delta(&self) -> (isize, isize) {
+    const fn delta(&self) -> (isize, isize) {
         match self {
             Dir::E => (1, 0),
             Dir::SE => (0, 1),
@@ -41,12 +41,8 @@ pub fn main() {
         .map(|l| to_pos(&to_directions(&mut l.chars()))).collect();
 
     let mut tiles: HashMap<(isize, isize), Color> = HashMap::new();
-    for pos in positions.iter() {
-        if let Some(tile) = tiles.get_mut(pos) {
-            tile.toggle();
-        } else {
-            tiles.insert(*pos, Color::Black);
-        }
+    for pos in positions.into_iter() {
+        tiles.entry(pos).or_insert(Color::White).toggle();
     }
 
     println!("Solution to exercise 1: {}", tiles.values().filter(|&x| x == &Color::Black).count());
@@ -99,30 +95,20 @@ fn to_pos(directions: &Vec<Dir>) -> (isize, isize) {
 }
 
 fn simulate_day(tiles: &mut HashMap<(isize, isize), Color>) {
-    let mut black_count: HashMap<(isize, isize), usize> = tiles.iter().map(|(pos, _)| (*pos, 0)).collect();
+    let mut black_count: HashMap<(isize, isize), usize> = tiles.keys().map(|pos| (*pos, 0)).collect();
 
-    for ((x, y), color) in tiles.iter() {
-        if color == &Color::Black {
-            for dir in Dir::iter() {
-                let (dx, dy) = dir.delta();
-                *black_count.entry((*x + dx, *y + dy)).or_insert(0) += 1;
-            }
+    for ((x, y), _) in tiles.iter().filter(|(_, color)| color == &&Color::Black) {
+        for dir in Dir::iter() {
+            let (dx, dy) = dir.delta();
+            *black_count.entry((*x + dx, *y + dy)).or_insert(0) += 1;
         }
     }
 
     for (pos, &count) in black_count.iter() {
-        let color = tiles.get(pos).unwrap_or(&Color::White);
-        match color {
-            Color::Black => {
-                if count == 0 || count > 2 {
-                    tiles.insert(*pos, Color::White);
-                }
-            },
-            Color::White => {
-                if count == 2 {
-                    tiles.insert(*pos, Color::Black);
-                }
-            }
+        if count == 0 || count > 2 {
+            tiles.insert(*pos, Color::White);
+        } else if count == 2 {
+            tiles.insert(*pos, Color::Black);
         }
     }
 }
