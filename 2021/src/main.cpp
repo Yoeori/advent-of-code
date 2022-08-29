@@ -2,13 +2,14 @@
 #include <string>
 
 #include "day01.cpp"
+#include "day02.cpp"
 
 using namespace std;
 
 typedef void (*DayFunctions)();
 
 int main(int argc, char *argv[]) {
-    DayFunctions days[] = {day01};
+    DayFunctions days[] = {day01, day02};
 
     if (argc >= 2) {
         int day;
