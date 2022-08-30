@@ -5,13 +5,14 @@
 #include "day02.cpp"
 #include "day03.cpp"
 #include "day04.cpp"
+#include "day05.cpp"
 
 using namespace std;
 
 typedef void (*DayFunctions)();
 
 int main(int argc, char *argv[]) {
-    DayFunctions days[] = {day01, day02, day03, day04};
+    DayFunctions days[] = {day01, day02, day03, day04, day05};
 
     if (argc >= 2) {
         int day;
