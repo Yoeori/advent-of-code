@@ -1,11 +1,8 @@
-#[derive(Debug)]
+use std::cmp::Ordering;
+
+#[derive(Debug, Clone, PartialEq, Eq)]
 enum List {
     Vec(Vec<List>), Value(u32)
-}
-
-#[derive(Debug, PartialEq, Eq)]
-enum CompResult {
-    Unknown, InOrder, OutOfOrder
 }
 
 impl List {
@@ -47,39 +44,41 @@ impl List {
 
         (output, idx + 1)
     }
+}
 
-    fn compare(&self, other: &Self) -> CompResult {
+impl PartialOrd for List {
+    fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+impl Ord for List {
+    fn cmp(&self, other: &Self) -> Ordering {
         match (self, other) {
-            (List::Value(a), List::Value(b)) => {
-                if a < b {
-                    CompResult::InOrder
-                } else if a > b {
-                    CompResult::OutOfOrder
-                } else {
-                    CompResult::Unknown
-                }
-            }
+            (List::Value(a), List::Value(b)) => a.cmp(b),
+            
+            (List::Value(a), b) => List::Vec(vec![List::Value(*a)]).cmp(b),
+            (a, List::Value(b)) => a.cmp(&List::Vec(vec![List::Value(*b)])),
+
             (List::Vec(a), List::Vec(b)) => {
-                let mut prev_res = CompResult::Unknown;
+                let mut prev_res = Ordering::Equal;
                 let mut i = 0;
 
-                while prev_res == CompResult::Unknown && (i < a.len() || i < b.len()) {
+                while prev_res == Ordering::Equal && (i < a.len() || i < b.len()) {
                     if i >= a.len() {
-                        return CompResult::InOrder;
+                        return Ordering::Less;
                     }
 
                     if i >= b.len() {
-                        return CompResult::OutOfOrder;
+                        return Ordering::Greater;
                     }
 
-                    prev_res = a[i].compare(&b[i]);
+                    prev_res = a[i].cmp(&b[i]);
                     i += 1;
                 }
 
                 prev_res
             }
-            (List::Value(a), b) => List::Vec(vec![List::Value(*a)]).compare(b),
-            (a, List::Value(b)) => a.compare(&List::Vec(vec![List::Value(*b)]))
         }
     }
 }
@@ -92,7 +91,7 @@ pub fn main() {
         let l1 = List::parse(l1);
         let l2 = List::parse(l2);
 
-        if l1.compare(&l2) == CompResult::InOrder {
+        if l1.cmp(&l2) == Ordering::Less {
             acc += i + 1;
         }
 
@@ -105,8 +104,9 @@ pub fn main() {
     let c1 = List::parse("[[2]]");
     let c2 = List::parse("[[6]]");
 
-    let c1_count = lists.iter().map(|x| x.compare(&c1)).filter(|x| x == &CompResult::InOrder).count() + 1;
-    let c2_count = lists.iter().map(|x| x.compare(&c2)).filter(|x| x == &CompResult::InOrder).count() + 2;
-    
-    println!("Exercise 2: {}", c1_count * c2_count);
+    lists.push(c1.clone());
+    lists.push(c2.clone());
+    lists.sort();
+
+    println!("Exercise 2: {}", (lists.iter().position(|x| x == &c1).unwrap() + 1) * (lists.iter().position(|x| x == &c2).unwrap() + 1));
 }
