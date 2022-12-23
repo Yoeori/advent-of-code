@@ -1,8 +1,8 @@
 use std::collections::HashMap;
 
 enum Formula<'a> {
-    Number(i64),
-    Comp(&'a str, &'a str, fn(i64, i64) -> i64)
+    Number(f64),
+    Comp(&'a str, &'a str, fn(f64, f64) -> f64)
 }
 
 impl<'a> Formula<'a> {
@@ -23,14 +23,14 @@ impl<'a> Formula<'a> {
         }
     }
 
-    fn exec(&self, formulas: &HashMap<&str, Formula>) -> i64 {
+    fn exec(&self, formulas: &HashMap<&str, Formula>) -> f64 {
         match self {
             Formula::Number(n) => *n,
             Formula::Comp(a, b, f) => f(formulas.get(a).unwrap().exec(formulas), formulas.get(b).unwrap().exec(formulas))
         }
     }
 
-    fn set_num(&mut self, new: i64) {
+    fn set_num(&mut self, new: f64) {
         match self {
             Formula::Number(n) => *n = new,
             _ => panic!()
@@ -53,7 +53,7 @@ pub fn main() {
 
     // Check which one contains "humn"
     let l1 = formulas[left].exec(&formulas);
-    formulas.get_mut("humn").unwrap().set_num(0);
+    formulas.get_mut("humn").unwrap().set_num(0f64);
     let l2 = formulas[left].exec(&formulas);
 
     let res = if l1 != l2 {
@@ -64,30 +64,22 @@ pub fn main() {
         binary_search(&mut formulas, right, l)
     };
 
-    // There can be multiple answers, take lowest.
-    for x in (res-10)..(res) {
-        formulas.get_mut("humn").unwrap().set_num(x);
-
-        if formulas[left].exec(&formulas) == formulas[right].exec(&formulas) {
-            println!("Exercise 2: {}", x);
-            break;
-        }
-    }
+    println!("Exercise 2: {}", res);
 
 }
 
-fn binary_search(formulas: &mut HashMap<&str, Formula>, search: &str, value: i64) -> i64 {
-    let mut min = 0;
+fn binary_search(formulas: &mut HashMap<&str, Formula>, search: &str, value: f64) -> f64 {
+    let mut min: i64 = 0;
     let mut max = 100_000_000_000_000;
 
     while min != max {
         let mid = (min + max) / 2;
 
-        formulas.get_mut("humn").unwrap().set_num(mid);
+        formulas.get_mut("humn").unwrap().set_num(mid as f64);
         let res = formulas[search].exec(formulas);
 
         if res == value {
-            return mid;
+            return mid as f64;
         } else if res > value {
             min = mid + 1;
         } else {
@@ -95,5 +87,5 @@ fn binary_search(formulas: &mut HashMap<&str, Formula>, search: &str, value: i64
         }
     }
 
-    min
+    min as f64
 }
