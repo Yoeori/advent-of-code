@@ -54,7 +54,7 @@ impl Game {
 }
 
 pub fn main() {
-    let file = fs::read_to_string("puzzles/2.txt").unwrap();
+    let file: String = fs::read_to_string("puzzles/2.txt").unwrap();
     let games: Vec<Game> = file.lines().map(|l| Game::parse(l)).collect();
 
     println!("Exercise 1: {}", games.iter().filter(|game| game.possible_with_limited_marbles()).map(|game| game.id).sum::<usize>());
