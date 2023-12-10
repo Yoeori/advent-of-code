@@ -6,6 +6,7 @@ mod day05;
 mod day06;
 mod day07;
 mod day08;
+mod day09;
 
 use ansi_term::Style;
 use std::env;
@@ -19,7 +20,8 @@ fn main() {
         day05::main,
         day06::main,
         day07::main,
-        day08::main
+        day08::main,
+        day09::main,
     ];
 
     let args: Vec<String> = env::args().collect();
