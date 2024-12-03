@@ -3,19 +3,11 @@ use std::collections::HashSet;
 use std::collections::HashMap;
 use std::iter::FromIterator;
 
-#[derive(Debug, Copy, Clone, Hash)]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 struct Pos {
     x: i32,
     y: i32
 }
-
-impl PartialEq for Pos {
-    fn eq(&self, other: &Self) -> bool {
-        self.x == other.x && self.y == other.y
-    }
-}
-
-impl Eq for Pos {}
 
 impl Pos {
     fn add(&self, other: &Pos) -> Pos {
