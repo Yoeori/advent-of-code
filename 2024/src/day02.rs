@@ -1,25 +1,30 @@
-use std::fs;
 
-pub fn main() {
-    let file = fs::read_to_string("puzzles/02.txt").unwrap();
+use crate::puzzle::Puzzle;
 
-    let xss = file
-        .lines()
-        .map(|l| {
-            l.split(' ')
-                .map(|n| n.parse::<u32>().unwrap())
-                .collect::<Vec<u32>>()
-        })
-        .collect::<Vec<Vec<u32>>>();
+pub(crate) struct Day02;
+impl Puzzle for Day02 {
+    type Part1 = usize;
+    type Part2 = usize;
 
-    let safe_reports: usize = xss.iter().map(|xs| if is_safe(xs) { 1 } else { 0 }).sum();
-    println!("Exercise 1: {}", safe_reports);
+    fn solve(&self, inp: &str) -> (Self::Part1, Self::Part2) {
+        let xss = inp
+            .lines()
+            .map(|l| {
+                l.split(' ')
+                    .map(|n| n.parse::<u32>().unwrap())
+                    .collect::<Vec<u32>>()
+            })
+            .collect::<Vec<Vec<u32>>>();
 
-    let partial_safe_reports: usize = xss
-        .iter()
-        .map(|xs| if is_partial_safe(xs) { 1 } else { 0 })
-        .sum();
-    println!("Exercise 2: {}", partial_safe_reports);
+        let safe_reports: usize = xss.iter().map(|xs| if is_safe(xs) { 1 } else { 0 }).sum();
+
+        let partial_safe_reports: usize = xss
+            .iter()
+            .map(|xs| if is_partial_safe(xs) { 1 } else { 0 })
+            .sum();
+
+        (safe_reports, partial_safe_reports)
+    }
 }
 
 fn check(xs: &[u32], f: fn(u32, u32) -> bool) -> bool {
