@@ -22,6 +22,7 @@ mod day19;
 mod day20;
 mod day21;
 mod day22;
+mod day23;
 
 use day01::Day01;
 use day02::Day02;
@@ -45,6 +46,7 @@ use day19::Day19;
 use day20::Day20;
 use day21::Day21;
 use day22::Day22;
+use day23::Day23;
 
 use ansi_term::Style;
 use puzzle::PrintablePuzzle;
@@ -61,7 +63,7 @@ macro_rules! days {
 fn main() {
     let days = days!(
         Day01, Day02, Day03, Day04, Day05, Day06, Day07, Day08, Day09, Day10, Day11, Day12, Day13,
-        Day14, Day15, Day16, Day17, Day18, Day19, Day20, Day21, Day22
+        Day14, Day15, Day16, Day17, Day18, Day19, Day20, Day21, Day22, Day23
     );
     let args: Vec<String> = env::args().collect();
 
