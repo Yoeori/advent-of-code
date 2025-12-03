@@ -2,9 +2,11 @@ mod puzzle;
 
 mod day01;
 mod day02;
+mod day03;
 
 use day01::Day01;
 use day02::Day02;
+use day03::Day03;
 
 use ansi_term::Style;
 use puzzle::PrintablePuzzle;
@@ -19,7 +21,7 @@ macro_rules! days {
 }
 
 fn main() {
-    let days = days!(Day01, Day02);
+    let days = days!(Day01, Day02, Day03);
     let args: Vec<String> = env::args().collect();
 
     if args.len() >= 2 {
