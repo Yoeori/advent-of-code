@@ -43,7 +43,7 @@ fn count_stones(n: u64, rounds: usize, numbers: &mut HashMap<u64, u64>, mul: u64
     } else if n == 0 {
         count_stones(1, rounds - 1, numbers, mul)
     } else if (n.ilog10() % 2) == 1 {
-        let div = 10_u64.pow((n.ilog10() + 1) / 2);
+        let div = 10_u64.pow(n.ilog10().div_ceil(2));
         let left = n / div;
         let right = n % div;
 
